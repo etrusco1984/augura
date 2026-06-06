@@ -1,0 +1,138 @@
+import express from "express";
+import { authenticateUser } from "../middleware/authMiddleware.js";
+
+import {
+  createPrediction,
+  getPredictionsForQuiniela,
+  getPrediction,
+  updatePrediction,
+  getLastPredictions, 
+  getPendingPredictions,
+  bulkSavePredictions
+} from "../db/predictionsSvc.js";
+import { getPredictions } from "../controllers/predictionsController.js";
+
+import { t } from "../i18n.js"
+
+const router = express.Router();
+
+// POST /predictions
+router.post("/", authenticateUser, async (req, res) => {
+  try {
+    const {
+      predicted_home_score,
+      predicted_away_score,
+      predicted_penalty_winner_team_id
+    } = req.body;
+
+    const userLang = req.user?.language_code || "en";
+
+    // 1. Enforce PK rule: only allowed if predicted score is a draw
+    const isDraw = predicted_home_score === predicted_away_score;
+
+    if (!isDraw && predicted_penalty_winner_team_id) {
+      return res.status(400).json({
+        error: t("error.only_draw_can_have_penalties", userLang)
+      });
+    }
+
+    // 2. If not a draw, force PK winner to null (extra safety)
+    if (!isDraw) {
+      req.body.predicted_penalty_winner_team_id = null;
+    }
+
+    // 3. Create prediction
+    const prediction = await createPrediction(
+      req.user.user_id,
+      req.body.game_id,
+      req.body.predicted_home_score,
+      req.body.predicted_away_score,
+      req.body.predicted_penalty_winner_team_id
+    );
+    res.status(201).json(prediction);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to create prediction" });
+  }
+});
+
+// GET /predictions/last/:user_id
+router.get("/last/:user_id", async (req, res) => {
+  try {
+    const { user_id } = req.params;
+    const predictions = await getLastPredictions(user_id);
+
+    res.json({
+      success: true,
+      predictions
+    });
+  } catch (err) {
+    console.error("Error fetching last predictions:", err);
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+});
+
+// GET /predictions/pending/:user_id
+router.get("/pending/:user_id", authenticateUser, async (req, res) => {
+  try {
+    const rows = await getPendingPredictions(req.params.user_id);
+    res.json({ success: true, pending: rows });
+  } catch (err) {
+    console.error("Error fetching pending predictions:", err);
+    res.status(500).json({ success: false, error: "Internal server error" });
+  }
+});
+
+// GET /predictions/quiniela/:quiniela_id
+router.get("/quiniela/:quiniela_id", authenticateUser, async (req, res) => {
+  try {
+    const list = await getPredictionsForQuiniela(req.params.quiniela_id);
+    res.json(list);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch predictions" });
+  }
+});
+
+// GET /predictions/:user_id/:quiniela_id/:game_id
+router.get("/:user_id/:quiniela_id/:game_id", authenticateUser, async (req, res) => {
+  try {
+    const p = await getPrediction(
+      req.params.user_id,
+      req.params.quiniela_id,
+      req.params.game_id
+    );
+    res.json(p);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch prediction" });
+  }
+});
+
+// GET /predictions/:quiniela_id
+router.get("/:quiniela_id", authenticateUser, getPredictions);
+
+// PATCH /predictions
+router.patch("/", authenticateUser, async (req, res) => {
+  try {
+    const updated = await updatePrediction(req.body);
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update prediction" });
+  }
+});
+
+// Save or update predictions in bulk for a quiniela
+router.post("/bulk", authenticateUser, async (req, res) => {
+  try {
+    const predictions = req.body; // array of prediction objects
+
+    const results = await bulkSavePredictions(predictions);
+
+    res.json(results); // array of { game_id, prediction_id }
+  } catch (err) {
+    console.error("Bulk save failed:", err);
+    res.status(500).json({ error: "Bulk save failed" });
+  }
+});
+
+export default router;

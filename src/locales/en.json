@@ -1,0 +1,8 @@
+{
+  "login.title": "Login",
+  "login.email": "Email",
+  "login.password": "Password",
+  "prediction.submit": "Submit prediction",
+  "error.only_draw_can_have_penalties": "Penalty winner can only be predicted if the match is a draw.",
+  "error.invalid_language": "Invalid language code."
+}

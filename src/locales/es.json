@@ -1,0 +1,9 @@
+{
+  "login.title": "Iniciar sesión",
+  "login.email": "Correo electrónico",
+  "login.password": "Contraseña",
+  "prediction.submit": "Enviar pronóstico",
+  "error.only_draw_can_have_penalties": "Solo se puede elegir un ganador por penales si el partido termina en empate.",
+  "error.invalid_language": "Invalid language code."
+}
+
