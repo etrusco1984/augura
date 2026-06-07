@@ -23,7 +23,7 @@ export default function ChangePassword() {
     }
 
     try {
-      const res = await fetch(`/users/${user.user_id}/change-password`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/users/${user.user_id}/change-password`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

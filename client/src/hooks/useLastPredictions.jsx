@@ -8,7 +8,7 @@ export function useLastPredictions(user_id) {
   useEffect(() => {
     async function fetchLastPredictions() {
       try {
-        const res = await fetch(`/api/predictions/last/${user_id}`);
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/predictions/last/${user_id}`);
         const data = await res.json();
 
         if (!data.success) {

@@ -9,7 +9,7 @@ export default function BaseInfoCard({ quinielaId }) {
 
     setLoading(true);
 
-    fetch(`/api/quinielas/${quinielaId}/details`, {
+    fetch(`${process.env.REACT_APP_API_URL}/api/quinielas/${quinielaId}/details`, {
       credentials: "include"
     })
       .then(res => res.json())

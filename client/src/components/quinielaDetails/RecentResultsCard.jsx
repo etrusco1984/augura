@@ -5,7 +5,7 @@ export default function QuinielaRecentResultsCard({ quinielaId }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/quinielas/${quinielaId}/details`, {
+    fetch(`${process.env.REACT_APP_API_URL}/api/quinielas/${quinielaId}/details`, {
       credentials: "include"
     })
       .then(res => res.json())
