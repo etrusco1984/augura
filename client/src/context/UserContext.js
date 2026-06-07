@@ -35,7 +35,7 @@ export function UserProvider({ children }) {
 
   // Login function
   async function login(email, password) {
-    const res = await fetch("/auth/login", {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
