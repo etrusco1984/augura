@@ -6,7 +6,9 @@ export function useNextGames() {
 
   useEffect(() => {
     async function load() {
-      const res = await fetch("${process.env.REACT_APP_API_URL}/api/dashboard/next-games");
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/dashboard/next-games`,{
+        credentials: "include"
+      });
       const data = await res.json();
       setGames(data);
       setLoading(false);

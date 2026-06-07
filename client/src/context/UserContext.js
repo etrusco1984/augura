@@ -12,14 +12,14 @@ export function UserProvider({ children }) {
   useEffect(() => {
     async function fetchUser() {
       try {
-        const res = await fetch("/auth/me", {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/me`, {
           method: "GET",
           credentials: "include"
         });
 
         if (res.ok) {
           const data = await res.json();
-          setUser(data);
+          setUser(data??data);
         } else {
           setUser(null);
         }
@@ -35,7 +35,7 @@ export function UserProvider({ children }) {
 
   // Login function
   async function login(email, password) {
-    const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -53,22 +53,18 @@ export function UserProvider({ children }) {
 
   // Logout function
   async function logout() {
-    await fetch("/auth/logout", {
-      method: "POST",
-      credentials: "include"
-    });
+  await fetch(`${process.env.REACT_APP_API_URL}/auth/logout`, {
+    method: "POST",
+    credentials: "include"
+  });
 
-    setUser(null);
-
-    const handleLogout = async () => {
-      await logout();
-      navigate("/login");
-    };
-  }
+  setUser(null);
+  navigate("/login");
+}
 
   // Register function
   async function register(name, email, password, lang = "en") {
-    const res = await fetch("/auth/register", {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/register`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },

@@ -10,7 +10,9 @@ export function useMyPoints(user_id) {
 
     async function fetchPoints() {
       try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/points/user/${user_id}`);
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/points/user/${user_id}`,{
+          credentials: "include"
+        });
         const data = await res.json();
 
         if (!data.success) {

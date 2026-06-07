@@ -16,12 +16,10 @@ export default function UpdateGameScore() {
     useEffect(() => {
         async function loadGames() {
 
-            try {
-                console.log("Fetching:", `/api/admin/season/${season_id}`);
+            try {                
                 const res = await api.get(`/api/admin/games/${season_id}`, { withCredentials: true });
                 setGames(res.data);
 
-                console.log("Response:", res.data);
             } catch (err) {
                 console.error("Failed to load games:", err);
             } finally {
@@ -92,9 +90,6 @@ export default function UpdateGameScore() {
                 payload,
                 { withCredentials: true }
             );
-
-
-            console.log("Saved game:", game.game_id);
         } catch (err) {
             console.error("Failed to save game:", err);
         } finally {

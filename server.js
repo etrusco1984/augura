@@ -36,20 +36,22 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: allowedOrigins,
     credentials: true
   })
 );
+
 app.use(express.json());
 app.use(cookieParser());
 
-// All routes go here
+// API routes FIRST
+app.use("/api/auth", authRoutes);
+app.use("/api/predictions", authenticateUser, predictionsRouter);
+app.use("/api/quinielas", quinielasRouter);
+app.use("/api/dashboard", authenticateUser, dashboardRoutes);
+app.use("/api/admin", adminGamesRoutes);
+
+// THEN non-API routes
 app.use("/competitions", competitionsRouter);
 app.use("/seasons", seasonsRouter);
 app.use("/stages", stagesRouter);
@@ -58,19 +60,14 @@ app.use("/teams", teamsRouter);
 app.use("/team-seasons", teamSeasonsRouter);
 app.use("/games", gamesRouter);
 app.use("/users", usersRouter);
-app.use("/api/quinielas", quinielasRouter);
 app.use("/quinielas-participant", quinielasParticipantRouter);
 app.use("/roles", rolesRouter);
-app.use("/api/predictions", predictionsRouter);
 app.use("/invitations", invitationsRouter);
-app.use("/points", pointsRouter);
+app.use("/points", authenticateUser, pointsRouter);
 app.use("/user-roles", userRolesRouter);
 app.use("/scoring-rules", scoringRulesRouter);
 app.use("/scoring", scoringRouter);
 app.use("/leaderboard", leaderboardRoutes);
-app.use("/auth", authRoutes);
-app.use("/api/dashboard", authenticateUser, dashboardRoutes);
-app.use("/api/admin", adminGamesRoutes);
 
 // Start the server
 app.listen(3001, () => {

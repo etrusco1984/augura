@@ -25,7 +25,7 @@ export default function AdminResetPassword() {
   useEffect(() => {
     const loadUsers = async () => {
       try {
-        const res = await fetch("/users/admin", {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/users/admin`, {
           credentials: "include"
         });
         const data = await res.json();

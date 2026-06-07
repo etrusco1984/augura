@@ -10,7 +10,9 @@ export function usePendingPredictions(user_id) {
 
     async function fetchPending() {
       try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/predictions/pending/${user_id}`);
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/predictions/pending`, {
+          credentials: "include"
+        });
         const data = await res.json();
 
         if (!data.success) {

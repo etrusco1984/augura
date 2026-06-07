@@ -8,7 +8,7 @@ export function useLastResults() {
   useEffect(() => {
     async function fetchLastResults() {
       try {
-        const response = await fetch("${process.env.REACT_APP_API_URL}/api/dashboard/last-results", {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/dashboard/last-results`, {
           credentials: "include",
         });
 

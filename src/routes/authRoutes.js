@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import { getUserRoles, getUserByEmail, createUser } from "../db/usersSvc.js";
 
 const router = express.Router();
+const isProduction = process.env.NODE_ENV === "production";
 
 router.post("/login", async (req, res) => {
   try {
@@ -38,8 +39,8 @@ router.post("/login", async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: "none",
-      secure: true,
+      secure: isProduction,          // true in production, false in dev
+      sameSite: isProduction ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
 
@@ -124,8 +125,8 @@ router.post("/register", async (req, res) => {
 
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: "none",
-      secure: true,
+      secure: isProduction,          // true in production, false in dev
+      sameSite: isProduction ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000
     });
 

@@ -120,8 +120,6 @@ export default function PredictionsScreen() {
       }));
 
       // 3. Send one bulk request
-      console.log("Saving for user:", user?.user_id);
-      console.log(payload);
       const res = await api.post("/api/predictions/bulk", payload);
 
       // 4. Backend returns updated prediction_ids
@@ -138,8 +136,6 @@ export default function PredictionsScreen() {
           });
         return updatedRounds;
       });
-
-      console.log("Round saved successfully");
 
     } catch (err) {
       console.error("Failed to save round:", err);

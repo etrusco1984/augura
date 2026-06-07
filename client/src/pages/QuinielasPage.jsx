@@ -15,7 +15,6 @@ export default function QuinielasPage({ userId }) {
 
   const { quinielas, loading, error } = useUserQuinielas(user?.user_id);
   const [openId, setOpenId] = useState(null);
-  console.log("Quinielas RECEIVED:", quinielas);
 
   if (!user) {
     return <div className="p-4 text-gray-500">Loading user…</div>;

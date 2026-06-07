@@ -1,23 +1,25 @@
 import express from "express";
-import { authenticateUser } from "../middleware/authMiddleware.js";
 
 import {
   createPrediction,
   getPredictionsForQuiniela,
   getPrediction,
   updatePrediction,
-  getLastPredictions, 
+  getLastPredictions,
   getPendingPredictions,
   bulkSavePredictions
 } from "../db/predictionsSvc.js";
-import { getPredictions } from "../controllers/predictionsController.js";
 
-import { t } from "../i18n.js"
+import { getPredictions } from "../controllers/predictionsController.js";
+import { t } from "../i18n.js";
 
 const router = express.Router();
 
-// POST /predictions
-router.post("/", authenticateUser, async (req, res) => {
+/**
+ * POST /api/predictions
+ * Create a prediction for the authenticated user
+ */
+router.post("/", async (req, res) => {
   try {
     const {
       predicted_home_score,
@@ -26,8 +28,6 @@ router.post("/", authenticateUser, async (req, res) => {
     } = req.body;
 
     const userLang = req.user?.language_code || "en";
-
-    // 1. Enforce PK rule: only allowed if predicted score is a draw
     const isDraw = predicted_home_score === predicted_away_score;
 
     if (!isDraw && predicted_penalty_winner_team_id) {
@@ -36,12 +36,10 @@ router.post("/", authenticateUser, async (req, res) => {
       });
     }
 
-    // 2. If not a draw, force PK winner to null (extra safety)
     if (!isDraw) {
       req.body.predicted_penalty_winner_team_id = null;
     }
 
-    // 3. Create prediction
     const prediction = await createPrediction(
       req.user.user_id,
       req.body.game_id,
@@ -49,18 +47,21 @@ router.post("/", authenticateUser, async (req, res) => {
       req.body.predicted_away_score,
       req.body.predicted_penalty_winner_team_id
     );
-    res.status(201).json(prediction);
 
+    res.status(201).json(prediction);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to create prediction" });
   }
 });
 
-// GET /predictions/last/:user_id
-router.get("/last/:user_id", async (req, res) => {
+/**
+ * GET /api/predictions/last
+ * Get last predictions for authenticated user
+ */
+router.get("/last", async (req, res) => {
   try {
-    const { user_id } = req.params;
+    const user_id = req.user.user_id;
     const predictions = await getLastPredictions(user_id);
 
     res.json({
@@ -73,10 +74,15 @@ router.get("/last/:user_id", async (req, res) => {
   }
 });
 
-// GET /predictions/pending/:user_id
-router.get("/pending/:user_id", authenticateUser, async (req, res) => {
+/**
+ * GET /api/predictions/pending
+ * Get pending predictions for authenticated user
+ */
+router.get("/pending", async (req, res) => {
   try {
-    const rows = await getPendingPredictions(req.params.user_id);
+    const user_id = req.user.user_id;
+    const rows = await getPendingPredictions(user_id);
+
     res.json({ success: true, pending: rows });
   } catch (err) {
     console.error("Error fetching pending predictions:", err);
@@ -84,8 +90,11 @@ router.get("/pending/:user_id", authenticateUser, async (req, res) => {
   }
 });
 
-// GET /predictions/quiniela/:quiniela_id
-router.get("/quiniela/:quiniela_id", authenticateUser, async (req, res) => {
+/**
+ * GET /api/predictions/quiniela/:quiniela_id
+ * Get predictions for a quiniela
+ */
+router.get("/quiniela/:quiniela_id", async (req, res) => {
   try {
     const list = await getPredictionsForQuiniela(req.params.quiniela_id);
     res.json(list);
@@ -94,11 +103,14 @@ router.get("/quiniela/:quiniela_id", authenticateUser, async (req, res) => {
   }
 });
 
-// GET /predictions/:user_id/:quiniela_id/:game_id
-router.get("/:user_id/:quiniela_id/:game_id", authenticateUser, async (req, res) => {
+/**
+ * GET /api/predictions/:quiniela_id/:game_id
+ * Get a single prediction for authenticated user
+ */
+router.get("/:quiniela_id/:game_id", async (req, res) => {
   try {
     const p = await getPrediction(
-      req.params.user_id,
+      req.user.user_id,
       req.params.quiniela_id,
       req.params.game_id
     );
@@ -108,11 +120,17 @@ router.get("/:user_id/:quiniela_id/:game_id", authenticateUser, async (req, res)
   }
 });
 
-// GET /predictions/:quiniela_id
-router.get("/:quiniela_id", authenticateUser, getPredictions);
+/**
+ * GET /api/predictions/:quiniela_id
+ * Get all predictions for a quiniela for authenticated user
+ */
+router.get("/:quiniela_id", getPredictions);
 
-// PATCH /predictions
-router.patch("/", authenticateUser, async (req, res) => {
+/**
+ * PATCH /api/predictions
+ * Update a prediction
+ */
+router.patch("/", async (req, res) => {
   try {
     const updated = await updatePrediction(req.body);
     res.json(updated);
@@ -121,14 +139,16 @@ router.patch("/", authenticateUser, async (req, res) => {
   }
 });
 
-// Save or update predictions in bulk for a quiniela
-router.post("/bulk", authenticateUser, async (req, res) => {
+/**
+ * POST /api/predictions/bulk
+ * Bulk save predictions
+ */
+router.post("/bulk", async (req, res) => {
   try {
-    const predictions = req.body; // array of prediction objects
-
+    const predictions = req.body;
     const results = await bulkSavePredictions(predictions);
 
-    res.json(results); // array of { game_id, prediction_id }
+    res.json(results);
   } catch (err) {
     console.error("Bulk save failed:", err);
     res.status(500).json({ error: "Bulk save failed" });

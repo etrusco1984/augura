@@ -71,6 +71,5 @@ export async function getUserQuinielas(userId) {
   `;
 
   const result = await pool.query(query, [userId]);
-  console.log("*****User Quinielas Result:", result.rows);
   return result.rows;
 }
