@@ -4,10 +4,25 @@ import testDBRoutes from "./routes/testDB.js";
 
 const app = express();
 
-app.use(cors({
-  origin: "http://localhost:3000",
-  credentials: true
-}));
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://augura-fe.onrender.com"
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true
+  })
+);
+
 
 app.use(express.json());
 app.use(testDBRoutes);
