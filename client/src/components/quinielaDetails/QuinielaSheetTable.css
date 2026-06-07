@@ -1,0 +1,68 @@
+/* QuinielaSheetTable.css */
+
+.sheet-table-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+.sheet-table {
+  border-collapse: collapse;
+  width: max-content; /* allows natural width */
+  min-width: 100%;
+}
+
+.sheet-table th,
+.sheet-table td {
+  border-bottom: 1px solid #ddd;
+  padding: 0.4rem 0.6rem;
+}
+
+.sheet-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.sticky-col {
+  position: sticky;
+  left: 0;
+  background-color: #fff;
+  font-weight: 600;
+  text-align: left;
+  box-shadow: 2px 0 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Optional: zebra stripes for readability */
+.sheet-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Optional: subtle hover effect */
+.sheet-table tbody tr:hover {
+  background-color: #eef6ff;
+}
+
+.header-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 0.3rem 0;
+}
+
+.sheet-table th {
+  background-color: #f0f4ff;
+  white-space: nowrap;
+}
+
+.sheet-table th,
+.sheet-table td {
+  border-right: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.sheet-table th:last-child,
+.sheet-table td:last-child {
+  border-right: none;
+}

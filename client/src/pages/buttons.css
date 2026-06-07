@@ -1,0 +1,49 @@
+.teams {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap; /* optional, prevents overflow */
+  gap: 0.5rem;     /* spacing between items */
+}
+
+.save-btn {
+  margin-left: 1rem;
+  padding: 0.25rem 0.75rem;
+  background-color: #C0C0C0; /* blue-600 */
+  color: black;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 70px;
+}
+
+.save-btn:hover {
+  background-color: #CC0000; /* blue-700 */
+  color: white;
+  font-weight: bolder;
+}
+
+.save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ⭐ Spinner */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 3px solid white;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
