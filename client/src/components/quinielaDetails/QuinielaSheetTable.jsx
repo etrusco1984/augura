@@ -39,8 +39,8 @@ export default function QuinielaSheetTable({ games, allPredictions }) {
                         {games.map((g) => (
                             <th key={g.game_id}>
                                 <div className="header-cell">
-                                    <div>{g.home_sn} {g.home_score}</div>
-                                    <div>{g.away_sn} {g.away_score}</div>
+                                    <div><img src={`/flag-icons/${g.home_logo}`} className="flag-icon-th" />{g.home_sn} {g.home_score}</div>
+                                    <div><img src={`/flag-icons/${g.away_logo}`} className="flag-icon-th" />{g.away_sn} {g.away_score}</div>
                                 </div>
                             </th>
                         ))}

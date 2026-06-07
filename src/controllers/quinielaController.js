@@ -46,13 +46,15 @@ export async function getQuinielaDetails(req, res) {
 }
 
 export async function getUserQuinielas(req, res) {
+  const client = await pool.connect();
   try {
-    const userId = req.user.user_id;
-    const client = await pool.connect();
+    const userId = req.user.user_id;    
     const quinielas = await getUserQuinielasFromDB(client, userId);
     res.json(quinielas);
   } catch (err) {
     console.error("Error fetching user quinielas:", err);
     res.status(500).json({ error: "Failed to fetch user quinielas" });
+  } finally{
+    client.release();
   }
 }

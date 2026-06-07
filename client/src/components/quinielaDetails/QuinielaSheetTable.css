@@ -50,6 +50,7 @@
   font-weight: 600;
   line-height: 1.2;
   padding: 0.3rem 0;
+  text-align: left;
 }
 
 .sheet-table th {
@@ -65,4 +66,9 @@
 .sheet-table th:last-child,
 .sheet-table td:last-child {
   border-right: none;
+}
+
+.flag-icon-th {
+  width: 40%;      /* halves the current width */
+  height: auto;    /* keeps the aspect ratio */
 }

@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import pool from "./src/db/pool.js";
 import competitionsRouter from "./src/routes/competitions.js";
 import seasonsRouter from "./src/routes/seasons.js";
 import stagesRouter from "./src/routes/stages.js";

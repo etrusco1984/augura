@@ -146,7 +146,7 @@ export default function PredictionsScreen() {
   const activeRoundId = rounds[activeRoundIndex]?.round_id;
   const rowsForRound = rounds[activeRoundIndex]?.games || [];
   return (
-    <DashboardLayout title="Make Your Predictions">
+    <DashboardLayout title="Llena tus pronósticos">
       <div className="prediction-screen">
 
         {/* ⭐ LEFT/RIGHT ARROWS */}
@@ -183,7 +183,7 @@ export default function PredictionsScreen() {
             className={`save-btn ${savingRound ? "saving" : ""}`}
             disabled={savingRound}
           >
-            {savingRound ? <span className="spinner"></span> : `Save ${rounds[activeRoundIndex]?.round_name}`}
+            {savingRound ? <span className="spinner"></span> : `Guardar ${rounds[activeRoundIndex]?.round_name}`}
           </button>
         </div>
 
