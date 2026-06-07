@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import competitionsRouter from "./src/routes/competitions.js";
 import seasonsRouter from "./src/routes/seasons.js";
 import stagesRouter from "./src/routes/stages.js";
@@ -28,6 +29,23 @@ dotenv.config();
 
 //Format returned data into JSon format
 const app = express();
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://augura-fe.onrender.com"
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 
