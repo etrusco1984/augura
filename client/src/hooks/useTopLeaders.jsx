@@ -8,7 +8,7 @@ export function useTopLeaders() {
   useEffect(() => {
     async function fetchTopLeaders() {
       try {
-        const res = await fetch("/leaderboard/top");
+        const res = await fetch("${process.env.REACT_APP_API_URL}/leaderboard/top");
         const data = await res.json();
 
         if (!data.success) {

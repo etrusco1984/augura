@@ -8,7 +8,7 @@ export function useAdminSeasons() {
   useEffect(() => {
     async function fetchAdminSeasons() {
       try {
-        const res = await fetch("/api/admin/seasons");
+        const res = await fetch("${process.env.REACT_APP_API_URL}/api/admin/seasons");
         if (!res.ok) throw new Error("Failed to fetch admin seasons");
         const data = await res.json();
         setSeasons(data);
