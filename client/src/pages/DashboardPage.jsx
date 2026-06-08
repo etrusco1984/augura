@@ -12,9 +12,9 @@ import { MyPointsCard } from "../components/MyPointsCard";
 
 export default function DashboardPage() {
   const { user, loading } = useUser();
-
   const { games: nextGames, loading: loadingNext } = useNextGames();
   const { results: lastResults, loading: loadingLast } = useLastResults();
+  const isAdmin = user?.is_admin === true;
 
   if (loading) return null;
   if (!user) return null;
@@ -35,18 +35,20 @@ export default function DashboardPage() {
         <PendingPredictionsCard user_id={user.user_id} />
         <MyPointsCard user_id={user.user_id} />
       </div>
-
+      
       {/* ROW 3 — ADMIN TOOLS */}
-      <div className="dashboard-cards">
-        <div className="card admin-card">
-          <h3>Admin Tools</h3>
-          <div className="admin-buttons">
-            <button>Reset Passwords</button>
-            <button>Manage Users</button>
-            <button>Invitations</button>
+      {isAdmin && (
+        <div className="dashboard-cards">
+          <div className="card admin-card">
+            <h3>Admin Tools</h3>
+            <div className="admin-buttons">
+              <button>Reset Passwords</button>
+              <button>Manage Users</button>
+              <button>Invitations</button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
     </DashboardLayout>
   );

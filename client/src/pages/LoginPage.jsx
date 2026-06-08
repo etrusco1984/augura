@@ -7,6 +7,7 @@ export default function LoginPage() {
   const { login } = useUser();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   async function handleSubmit(e) {
@@ -18,6 +19,7 @@ export default function LoginPage() {
       navigate("/dashboard");
     } catch (err) {
       console.error("Login failed:", err);
+      setErrorMessage("Email o password incorrecto");
     }
   }
 
@@ -61,6 +63,22 @@ export default function LoginPage() {
       >
         
         <h2 style={{ textAlign: "center", marginBottom: 20 }}>Login</h2>
+
+        {errorMessage && (
+          <div
+            style={{
+              background: "#ffe5e5",
+              color: "#b30000",
+              padding: "10px",
+              borderRadius: "6px",
+              marginBottom: "15px",
+              textAlign: "center",
+              fontSize: "14px"
+            }}
+          >
+            {errorMessage}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           <input

@@ -41,7 +41,7 @@ export default function ChangePassword() {
       }
 
       setSuccess("Password updated successfully");
-      setTimeout(() => navigate("/"), 1500);
+      
 
     } catch (err) {
       setError("Something went wrong");
@@ -50,14 +50,14 @@ export default function ChangePassword() {
 
   return (
     <div style={{ maxWidth: "400px", margin: "0 auto" }}>
-      <h2>Change Password</h2>
+      <h2>Cambiar Password</h2>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
       {success && <p style={{ color: "green" }}>{success}</p>}
 
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Current Password</label>
+          <label>Password Actual: </label>
           <input
             type="password"
             value={currentPassword}
@@ -67,7 +67,7 @@ export default function ChangePassword() {
         </div>
 
         <div>
-          <label>New Password</label>
+          <label>Nuevo Password: </label>
           <input
             type="password"
             value={newPassword}
@@ -77,7 +77,7 @@ export default function ChangePassword() {
         </div>
 
         <div>
-          <label>Confirm New Password</label>
+          <label>Confirmar Password: </label>
           <input
             type="password"
             value={confirmPassword}
@@ -86,7 +86,7 @@ export default function ChangePassword() {
           />
         </div>
 
-        <button type="submit">Update Password</button>
+        <button type="submit">Cambiar Password</button>
       </form>
     </div>
   );
