@@ -20,7 +20,8 @@ export async function getTopLeaders() {
         id_jugador AS user_id,
         jugador AS username,
         total_points,
-        quiniela
+        quiniela,
+        season_name
      FROM leaderboard_view
      ORDER BY total_points DESC
      LIMIT 4`

@@ -25,7 +25,7 @@ export default function Register() {
 
     try {
       await register(form.name, form.email, form.password, form.lang);
-      navigate("/"); // auto-login after registration
+      //navigate("/"); // auto-login after registration
     } catch (err) {
       setError(err.message);
     }

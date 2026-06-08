@@ -17,7 +17,7 @@ export function LeadersCard() {
               {index + 1}. {leader.username}
             </strong>{" "}
             — {leader.total_points} pts
-            <div className="game-meta">{leader.quiniela}</div>
+            <div className="game-meta">{leader.quiniela}-{leader.season_name}</div>
           </li>
         ))}
       </ul>

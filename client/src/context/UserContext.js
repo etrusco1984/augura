@@ -64,7 +64,7 @@ export function UserProvider({ children }) {
 
   // Register function
   async function register(name, email, password, lang = "en") {
-    const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/register`, {
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/register`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
