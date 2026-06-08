@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { apiFetch } from "../utils/apiFetch";
 
 export function useLastPredictions(user_id) {
   const [predictions, setPredictions] = useState([]);
@@ -8,9 +9,7 @@ export function useLastPredictions(user_id) {
   useEffect(() => {
     async function fetchLastPredictions() {
       try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/predictions/last`,{
-          credentials:"include"
-        });
+        const res = await apiFetch(`${process.env.REACT_APP_API_URL}/api/predictions/last`);
         const data = await res.json();
 
         if (!data.success) {

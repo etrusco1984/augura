@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import api from "../api";
+import { apiFetch } from "../utils/apiFetch";
 import { useUser } from "../context/UserContext";
 
 export function useUserQuinielas() {
@@ -9,19 +9,20 @@ export function useUserQuinielas() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    
     if (!user) {
       setLoading(false);
       return;
     }
 
     async function fetchData() {
-
       try {
-        const response = await api.get("/api/quinielas", {
-          withCredentials: true, 
-        });
-        setQuinielas(response.data);
+        const res = await apiFetch(
+          `${process.env.REACT_APP_API_URL}/api/quinielas`
+        );
+        if (!res.ok) throw new Error("Unable to load quinielas");
+
+        const data = await res.json();
+        setQuinielas(data);
       } catch (err) {
         setError("Unable to load quinielas");
       } finally {

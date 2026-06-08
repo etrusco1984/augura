@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import { apiFetch } from "../utils/apiFetch";
 
 export default function ChangePassword() {
   const { user } = useUser();
@@ -23,15 +24,17 @@ export default function ChangePassword() {
     }
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/users/${user.user_id}/change-password`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          currentPassword,
-          newPassword
-        })
-      });
+      const res = await apiFetch(
+        `${process.env.REACT_APP_API_URL}/users/${user.user_id}/change-password`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            currentPassword,
+            newPassword
+          })
+        }
+      );
 
       const data = await res.json();
 
@@ -41,7 +44,7 @@ export default function ChangePassword() {
       }
 
       setSuccess("Password updated successfully");
-      
+
 
     } catch (err) {
       setError("Something went wrong");

@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
+import { apiFetch } from "../../utils/apiFetch";
 
 export default function QuinielaRecentResultsCard({ quinielaId }) {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/quinielas/${quinielaId}/details`, {
-      credentials: "include"
-    })
+    apiFetch(`${process.env.REACT_APP_API_URL}/api/quinielas/${quinielaId}/details`)
       .then(res => res.json())
       .then(data => {
         setResults(data.recentResults);

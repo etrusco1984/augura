@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import LogoutButton from "../components/LogoutButton";
+import { apiFetch } from "../utils/apiFetch";
 
 export default function AdminResetPassword() {
   const { user } = useUser();
@@ -13,6 +14,7 @@ export default function AdminResetPassword() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  
 
   // Only admins can access this page
   useEffect(() => {
@@ -25,9 +27,7 @@ export default function AdminResetPassword() {
   useEffect(() => {
     const loadUsers = async () => {
       try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/users/admin`, {
-          credentials: "include"
-        });
+        const res = await apiFetch(`${process.env.REACT_APP_API_URL}/users/admin`);
         const data = await res.json();
         
         setUsers(data);

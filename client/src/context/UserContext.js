@@ -11,15 +11,23 @@ export function UserProvider({ children }) {
   // Restore session on page load
   useEffect(() => {
     async function fetchUser() {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
       try {
         const res = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/me`, {
           method: "GET",
-          credentials: "include"
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
         });
 
         if (res.ok) {
           const data = await res.json();
-          setUser(data??data);
+          setUser(data.user);
         } else {
           setUser(null);
         }
@@ -37,7 +45,6 @@ export function UserProvider({ children }) {
   async function login(email, password) {
     const res = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
       method: "POST",
-      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
     });
@@ -47,26 +54,28 @@ export function UserProvider({ children }) {
     }
 
     const data = await res.json();
+
+    // Save token
+    localStorage.setItem("token", data.token);
+
+    // Save user
     setUser(data.user);
+
     return data.user;
   }
 
   // Logout function
   async function logout() {
-  await fetch(`${process.env.REACT_APP_API_URL}/auth/logout`, {
-    method: "POST",
-    credentials: "include"
-  });
-
-  setUser(null);
-  navigate("/login");
-}
+    // No backend call needed anymore
+    localStorage.removeItem("token");
+    setUser(null);
+    navigate("/login");
+  }
 
   // Register function
   async function register(name, email, password, lang = "en") {
     const res = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/register`, {
       method: "POST",
-      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password, lang })
     });
@@ -77,8 +86,14 @@ export function UserProvider({ children }) {
     }
 
     const data = await res.json();
-    setUser(data);
-    return data;
+
+    // Save token
+    localStorage.setItem("token", data.token);
+
+    // Save user
+    setUser(data.user);
+
+    return data.user;
   }
 
   return (
