@@ -24,32 +24,35 @@ export default function QuinielaDetailsSheetPage() {
   return (
     <DashboardLayout title={name}>
       {/* HEADER */}
-      <div className="qd-header">
+      <div className="header">
         <div className="qd-subinfo">
           <span>Season: <strong>{season_name} •••</strong></span>
           <span> Status: <strong>{is_active ? "Active" : "Closed"}</strong></span>
         </div>
+        <div style={{ height: '12px', width: '100%' }} />
       </div>
 
       {/* TWO-COLUMN LAYOUT */}
-      <div className="qd-grid">
+      <div class="scroll-area">
+        <div className="qd-grid">
 
-        {/* LEFT COLUMN — Excel-style table */}
-        <div className="qd-table-wrapper">
-          {/* Placeholder — you will plug in your new table here */}
-          <div className="qd-table-placeholder">
-            <QuinielaSheetTable
-              games={details.games}
-              allPredictions={details.allPredictions}
-            />
+          {/* LEFT COLUMN — Excel-style table */}
+          <div className="qd-table-wrapper">
+            {/* Placeholder — you will plug in your new table here */}
+            <div className="qd-table-placeholder">
+              <QuinielaSheetTable
+                games={details.games}
+                allPredictions={details.allPredictions}
+              />
+            </div>
           </div>
-        </div>
 
-        {/* RIGHT COLUMN — Ranking Summary */}
-        <div className="qd-ranking-wrapper">
-          <LeaderboardCard quinielaId={quinielaId} />
-        </div>
+          {/* RIGHT COLUMN — Ranking Summary */}
+          <div className="qd-ranking-wrapper">
+            <LeaderboardCard quinielaId={quinielaId} />
+          </div>
 
+        </div>
       </div>
     </DashboardLayout>
   );

@@ -108,126 +108,128 @@ export default function UpdateGameScore() {
     return (
         <DashboardLayout title="Update Game Scores">
             <div className="prediction-screen">
+                <div class="header">
+                    {/* ⭐ LEFT/RIGHT ARROWS */}
+                    <div className="flex justify-between items-center px-2 py-2">
+                        <button
+                            onClick={() => setActiveRoundIndex(i => Math.max(i - 1, 0))}
+                            disabled={activeRoundIndex === 0}
+                            className={`px-3 py-1 rounded ${activeRoundIndex === 0
+                                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                : "bg-green-700 text-white"
+                                }`}
+                        >
+                            ◀
+                        </button>
 
-                {/* ⭐ LEFT/RIGHT ARROWS */}
-                <div className="flex justify-between items-center px-2 py-2">
-                    <button
-                        onClick={() => setActiveRoundIndex(i => Math.max(i - 1, 0))}
-                        disabled={activeRoundIndex === 0}
-                        className={`px-3 py-1 rounded ${activeRoundIndex === 0
-                            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                            : "bg-green-700 text-white"
-                            }`}
-                    >
-                        ◀
-                    </button>
+                        <span className="font-semibold text-lg">
+                            {rounds[activeRoundIndex]?.round_name}
+                        </span>
 
-                    <span className="font-semibold text-lg">
-                        {rounds[activeRoundIndex]?.round_name}
-                    </span>
-
-                    <button
-                        onClick={() =>
-                            setActiveRoundIndex(i =>
-                                Math.min(i + 1, rounds.length - 1)
-                            )
-                        }
-                        disabled={activeRoundIndex === rounds.length - 1}
-                        className={`px-3 py-1 rounded ${activeRoundIndex === rounds.length - 1
-                            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                            : "bg-green-700 text-white"
-                            }`}
-                    >
-                        ▶
-                    </button>
-                </div>
-
-                {/* ⭐ GAME ROWS */}
-                {rowsForRound.map(row => (
-                    <div key={row.game_id} className="prediction-row">
-
-                        {/* ⭐ Everything in one horizontal row */}
-                        <div className="teams">
-                            <img src={`/flag-icons/${row.home_logo}`} className="team-logo" />
-                            <span className="team-name">{row.home_sn}</span>
-
-                            <input
-                                type="number"
-                                value={row.home_score}
-                                onChange={e =>
-                                    updateRow(row.game_id, "home_score", e.target.value)
-                                }
-                                className="score-input"
-                            />
-
-                            <span className="vs"><strong>vs</strong></span>
-
-                            <input
-                                type="number"
-                                value={row.away_score}
-                                onChange={e =>
-                                    updateRow(row.game_id, "away_score", e.target.value)
-                                }
-                                className="score-input"
-                            />
-
-                            <span className="team-name">{row.away_sn}</span>
-                            <img src={`/flag-icons/${row.away_logo}`} className="team-logo" />
-
-                            {/* ⭐ Save button inline */}
-                            <button
-                                onClick={() => saveSingleGame(row)}
-                                className={`save-btn ${savingGameId === row.game_id ? "saving" : ""}`}
-                                disabled={savingGameId === row.game_id}
-                            >
-                                {savingGameId === row.game_id ? (
-                                    <span className="spinner"></span>
-                                ) : (
-                                    "Save"
-                                )}
-                            </button>
-                        </div>
-
-                        {/* ⭐ PK radio buttons (only if knockout AND tie) */}
-                        {row.stage_name === "knockout" &&
-                            Number(row.home_score) === Number(row.away_score) && (
-                                <div className="pk-radio-group mt-2">
-                                    <label>
-                                        <input
-                                            type="radio"
-                                            name={`pk-${row.game_id}`}
-                                            checked={row.penalty_winner_team_id === row.home_team_id}
-                                            onChange={() =>
-                                                updateRow(
-                                                    row.game_id,
-                                                    "penalty_winner_team_id",
-                                                    row.home_team_id
-                                                )
-                                            }
-                                        />
-                                        {row.home_sn}
-                                    </label>
-
-                                    <label>
-                                        <input
-                                            type="radio"
-                                            name={`pk-${row.game_id}`}
-                                            checked={row.penalty_winner_team_id === row.away_team_id}
-                                            onChange={() =>
-                                                updateRow(
-                                                    row.game_id,
-                                                    "penalty_winner_team_id",
-                                                    row.away_team_id
-                                                )
-                                            }
-                                        />
-                                        {row.away_sn}
-                                    </label>
-                                </div>
-                            )}
+                        <button
+                            onClick={() =>
+                                setActiveRoundIndex(i =>
+                                    Math.min(i + 1, rounds.length - 1)
+                                )
+                            }
+                            disabled={activeRoundIndex === rounds.length - 1}
+                            className={`px-3 py-1 rounded ${activeRoundIndex === rounds.length - 1
+                                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                : "bg-green-700 text-white"
+                                }`}
+                        >
+                            ▶
+                        </button>
                     </div>
-                ))}
+                    <div style={{ height: '12px', width: '100%' }} />
+                </div>
+                <div class="scroll-area">
+                    {/* ⭐ GAME ROWS */}
+                    {rowsForRound.map(row => (
+                        <div key={row.game_id} className="prediction-row">
 
+                            {/* ⭐ Everything in one horizontal row */}
+                            <div className="teams">
+                                <img src={`/flag-icons/${row.home_logo}`} className="team-logo" />
+                                <span className="team-name">{row.home_sn}</span>
+
+                                <input
+                                    type="number"
+                                    value={row.home_score}
+                                    onChange={e =>
+                                        updateRow(row.game_id, "home_score", e.target.value)
+                                    }
+                                    className="score-input"
+                                />
+
+                                <span className="vs"><strong>vs</strong></span>
+
+                                <input
+                                    type="number"
+                                    value={row.away_score}
+                                    onChange={e =>
+                                        updateRow(row.game_id, "away_score", e.target.value)
+                                    }
+                                    className="score-input"
+                                />
+
+                                <span className="team-name">{row.away_sn}</span>
+                                <img src={`/flag-icons/${row.away_logo}`} className="team-logo" />
+
+                                {/* ⭐ Save button inline */}
+                                <button
+                                    onClick={() => saveSingleGame(row)}
+                                    className={`save-btn ${savingGameId === row.game_id ? "saving" : ""}`}
+                                    disabled={savingGameId === row.game_id}
+                                >
+                                    {savingGameId === row.game_id ? (
+                                        <span className="spinner"></span>
+                                    ) : (
+                                        "Save"
+                                    )}
+                                </button>
+                            </div>
+
+                            {/* ⭐ PK radio buttons (only if knockout AND tie) */}
+                            {row.stage_name === "knockout" &&
+                                Number(row.home_score) === Number(row.away_score) && (
+                                    <div className="pk-radio-group mt-2">
+                                        <label>
+                                            <input
+                                                type="radio"
+                                                name={`pk-${row.game_id}`}
+                                                checked={row.penalty_winner_team_id === row.home_team_id}
+                                                onChange={() =>
+                                                    updateRow(
+                                                        row.game_id,
+                                                        "penalty_winner_team_id",
+                                                        row.home_team_id
+                                                    )
+                                                }
+                                            />
+                                            {row.home_sn}
+                                        </label>
+
+                                        <label>
+                                            <input
+                                                type="radio"
+                                                name={`pk-${row.game_id}`}
+                                                checked={row.penalty_winner_team_id === row.away_team_id}
+                                                onChange={() =>
+                                                    updateRow(
+                                                        row.game_id,
+                                                        "penalty_winner_team_id",
+                                                        row.away_team_id
+                                                    )
+                                                }
+                                            />
+                                            {row.away_sn}
+                                        </label>
+                                    </div>
+                                )}
+                        </div>
+                    ))}
+                </div>
             </div>
         </DashboardLayout>
     );
