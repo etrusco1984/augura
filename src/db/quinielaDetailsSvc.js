@@ -131,7 +131,7 @@ export async function getUserPredictions(client,quinielaId, userId) {
   return rows;
 }
 
-// Get top 10 users in the quiniela leaderboard, along with their total points and breakdown of hits
+// Get users in the quiniela leaderboard, along with their total points and breakdown of hits
 export async function getLeaderboard(client, quinielaId) {
   const sql = `
     SELECT
