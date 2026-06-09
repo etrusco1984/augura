@@ -192,7 +192,7 @@ export async function getGamesForQuiniela(client, quiniela_id) {
     `SELECT *
      FROM v_quiniela_games
      WHERE quiniela_id = $1
-     ORDER BY game_id ASC`,
+     ORDER BY match_date ASC`,
     [quiniela_id]
   );
   return sql.rows;
