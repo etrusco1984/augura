@@ -293,7 +293,17 @@ body {
   /* Container stays normal — sidebar is fixed, not part of flow */
   .dashboard-container {
     height: auto;
-    overflow: visible;
+    overflow: hidden;
+  }
+  
+  .dashboard-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    z-index: 1000; /* higher than sidebar */
+    background-color: var(--color-background-light);
+    padding-left: 0.75rem;
   }
 
   /* MOBILE SIDEBAR (slide-in drawer) */
@@ -304,6 +314,7 @@ body {
     width: 240px;
     height: 100vh;
     overflow-y: auto;
+    overflow-x: hidden;
     transition: left 0.3s ease;
     z-index: 999;
   }
@@ -330,14 +341,9 @@ body {
     background: none;
     border: none;
     cursor: pointer;
-    color: var(--color-primary-dark-green);
     margin-right: 1rem;
-  }
-
-  .dashboard-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+    color: var(--color-accent-electric); /* bright mint/green */
+    text-shadow: 0 0 4px rgba(9, 53, 24, 0.6); /* subtle glow for contrast */
   }
 
   input[type="number"] {
