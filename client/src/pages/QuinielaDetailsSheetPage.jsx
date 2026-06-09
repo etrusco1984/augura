@@ -32,7 +32,7 @@ export default function QuinielaDetailsSheetPage() {
         <div style={{ height: '12px', width: '100%' }} />
       </div>
 
-      {/* TWO-COLUMN LAYOUT */}
+      {/* TWO-COLUMN LAYOUT WITH SCROLL */}
       <div class="scroll-area">
         <div className="qd-grid">
 
