@@ -96,7 +96,8 @@ export default function PredictionsScreen() {
   if (!activeRound) return;
 
   // Use target_date from the round itself
-  const lockDate = new Date(activeRound.games[0]?.route_target);
+  const lockDate = new Date(`${activeRound.games[0]?.route_target}Z`);
+
   if (isNaN(lockDate.getTime())) {
     setTimeLeft("Undefined");
     return;
