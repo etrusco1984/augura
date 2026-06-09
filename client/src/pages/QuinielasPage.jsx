@@ -77,12 +77,12 @@ export default function QuinielasPage({ userId }) {
                           <div>• Next game: {q.next_game || "—"}</div>
                           <Link to={`/quinielas/${q.quiniela_id}/details-sheet`}
                             className="mt-2 block text-center bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                            Enter Quiniela
+                            Entrar a Quiniela
                           </Link> •••
                           <Link
                             to={`/quinielas/${q.quiniela_id}/predictions`}
                             className="mt-2 block text-center bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-                            Fill Predictions
+                            Llenar pronósticos
                           </Link>
                         </div>
                       </td>
