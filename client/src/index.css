@@ -8,7 +8,8 @@ body {
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   background-color: var(--color-background-light);
-  overflow: hidden; /* prevent global scroll in fixed layout */
+  overflow: hidden;
+  /* prevent global scroll in fixed layout */
 }
 
 :root {
@@ -33,8 +34,10 @@ body {
 
 .dashboard-container {
   display: flex;
-  height: 100vh;       /* fixed layout */
-  overflow: hidden;    /* prevents vertical expansion */
+  height: 100vh;
+  /* fixed layout */
+  overflow: hidden;
+  /* prevents vertical expansion */
 }
 
 /* ===== SIDEBAR (fixed) ===== */
@@ -105,7 +108,8 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden; /* prevents double scrollbars */
+  overflow: hidden;
+  /* prevents double scrollbars */
 }
 
 /* Header */
@@ -187,16 +191,20 @@ body {
 
 @media (max-width: 768px) {
   body {
-    overflow: auto; /* allow scrolling on mobile */
+    overflow: auto;
+    /* allow scrolling on mobile */
   }
 
   .dashboard-container {
-    height: auto; /* let content grow naturally */
-    overflow: visible; /* remove scroll lock */
+    height: auto;
+    /* let content grow naturally */
+    overflow: visible;
+    /* remove scroll lock */
   }
 
   .main-content {
-    overflow-y: visible; /* allow full vertical scroll */
+    overflow-y: visible;
+    /* allow full vertical scroll */
   }
 }
 
@@ -295,13 +303,14 @@ body {
     height: auto;
     overflow: hidden;
   }
-  
+
   .dashboard-header {
     display: flex;
     align-items: center;
     gap: 1rem;
     position: relative;
-    z-index: 1000; /* higher than sidebar */
+    z-index: 1000;
+    /* higher than sidebar */
     background-color: var(--color-background-light);
     padding-left: 0.75rem;
   }
@@ -310,23 +319,28 @@ body {
   .sidebar {
     position: fixed;
     top: 0;
-    left: -260px; /* hidden */
+    left: -260px;
+    /* hidden */
     width: 240px;
     height: 100vh;
     overflow-y: auto;
-    overflow-x: hidden;
     transition: left 0.3s ease;
-    z-index: 999;
+    z-index: 2000;
+    /* higher than header */
+    background-color: var(--color-primary-dark-green);
   }
 
   .sidebar.open {
-    left: 0; /* slide in */
+    left: 0;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
+    /* slide in */
   }
 
   /* MAIN CONTENT */
   .main-content {
     padding: 0.5rem 0.75rem;
-    overflow-y: auto; /* allow scrolling */
+    overflow-y: auto;
+    /* allow scrolling */
   }
 
   /* GRID FIX */
@@ -342,15 +356,21 @@ body {
     border: none;
     cursor: pointer;
     margin-right: 1rem;
-    color: var(--color-accent-electric); /* bright mint/green */
-    text-shadow: 0 0 4px rgba(9, 53, 24, 0.6); /* subtle glow for contrast */
+    color: var(--color-accent-electric);
+    /* bright mint/green */
+    text-shadow: 0 0 4px rgba(9, 53, 24, 0.6);
+    /* subtle glow for contrast */
   }
 
   input[type="number"] {
-    width: 60px;          /* smaller width */
-    padding: 0.25rem;     /* tighter padding */
-    font-size: 0.9rem;    /* slightly smaller text */
-    text-align: center;   /* keeps scores aligned */
+    width: 60px;
+    /* smaller width */
+    padding: 0.25rem;
+    /* tighter padding */
+    font-size: 0.9rem;
+    /* slightly smaller text */
+    text-align: center;
+    /* keeps scores aligned */
   }
 
   .save-button {
