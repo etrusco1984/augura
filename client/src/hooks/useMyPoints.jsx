@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { apiFetch } from "../utils/apiFetch";
 
 export function useMyPoints(user_id) {
   const [points, setPoints] = useState([]);
@@ -10,9 +11,7 @@ export function useMyPoints(user_id) {
 
     async function fetchPoints() {
       try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/points/user/${user_id}`,{
-          credentials: "include"
-        });
+        const res = await apiFetch(`${process.env.REACT_APP_API_URL}/points/user/${user_id}`);
         const data = await res.json();
 
         if (!data.success) {

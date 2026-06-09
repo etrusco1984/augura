@@ -32,7 +32,8 @@ dotenv.config();
 const app = express();
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://augura-fe.onrender.com"
+  "https://augura-fe.onrender.com",
+  "https://augura-fe-pr-1.onrender.com"
 ];
 
 app.use(

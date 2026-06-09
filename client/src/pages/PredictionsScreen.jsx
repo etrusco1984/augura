@@ -1,9 +1,9 @@
 import { use, useEffect, useState } from "react";
-import api from "../api";
+import { apiFetch } from "../utils/apiFetch";
 import { useParams } from "react-router-dom";
 import DashboardLayout from "../components/layout/DashboardLayout";
 import { useUser } from "../context/UserContext";
-import "./buttons.css"; 
+import "./buttons.css";
 
 export default function PredictionsScreen() {
   const { quiniela_id } = useParams();
@@ -16,14 +16,19 @@ export default function PredictionsScreen() {
   const [activeRoundIndex, setActiveRoundIndex] = useState(0); // ✅ FIXED
   const [loading, setLoading] = useState(true);
   const [savingRound, setSavingRound] = useState(false);
+  const [timeLeft, setTimeLeft] = useState("");
 
   // Load data
   useEffect(() => {
     async function loadData() {
       try {
-        const res = await api.get(`/api/predictions/${quiniela_id}`);
-        setGames(res.data.games);
-        setPredictions(res.data.predictions);
+        const res = await apiFetch(
+          `${process.env.REACT_APP_API_URL}/api/predictions/${quiniela_id}`
+        );
+        const data = await res.json();
+        setGames(data.games);
+        setPredictions(data.predictions);
+
       } catch (err) {
         console.error("Failed to load predictions screen:", err);
       } finally {
@@ -33,6 +38,7 @@ export default function PredictionsScreen() {
 
     loadData();
   }, [quiniela_id]);
+
 
   // Merge games + predictions into rows AND build rounds
   useEffect(() => {
@@ -56,6 +62,7 @@ export default function PredictionsScreen() {
           match_date: game.match_date,
           target_date: game.target_date,
           stage_name: game.stage_name,
+          route_target: game.route_target,
           isLocked,
 
           prediction_id: prediction?.prediction_id || null,
@@ -84,7 +91,37 @@ export default function PredictionsScreen() {
     }
   }, [games, predictions, loading]);
 
+  useEffect(() => {
+  const activeRound = rounds[activeRoundIndex];
+  if (!activeRound) return;
+
+  // Use target_date from the round itself
+  const lockDate = new Date(activeRound.games[0]?.route_target);
+  if (isNaN(lockDate.getTime())) {
+    setTimeLeft("Undefined");
+    return;
+  }
+
+  const timer = setInterval(() => {
+    const now = new Date();
+    const diff = lockDate - now;
+
+    if (diff <= 0) {
+      clearInterval(timer);
+      setTimeLeft("00:00:00");
+    } else {
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+      setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+    }
+  }, 1000);
+
+  return () => clearInterval(timer);
+}, [rounds, activeRoundIndex]);
+
   if (loading) return <div>Loading...</div>;
+
 
   // Update row state
   function updateRow(gameId, field, value) {
@@ -120,11 +157,17 @@ export default function PredictionsScreen() {
       }));
 
       // 3. Send one bulk request
-      const res = await api.post("/api/predictions/bulk", payload);
+      const res = await apiFetch(
+        `${process.env.REACT_APP_API_URL}/api/predictions/bulk`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        }
+      );
 
       // 4. Backend returns updated prediction_ids
-      const updated = res.data;
-      // Example: [ { game_id: 101, prediction_id: 555 }, ... ]
+      const updated = await res.json();
 
       // 5. Update rows state with new prediction_ids
       setRounds(prev => {
@@ -146,7 +189,7 @@ export default function PredictionsScreen() {
   const activeRoundId = rounds[activeRoundIndex]?.round_id;
   const rowsForRound = rounds[activeRoundIndex]?.games || [];
   return (
-    <DashboardLayout title="Llena tus pronósticos">
+    <DashboardLayout title={`Tiempo restante: ${timeLeft}`}>
       <div className="prediction-screen">
 
         {/* ⭐ LEFT/RIGHT ARROWS */}
@@ -181,7 +224,7 @@ export default function PredictionsScreen() {
           <button
             onClick={saveRound}
             className={`save-btn ${savingRound ? "saving" : ""}`}
-            disabled={savingRound}
+            disabled={savingRound || timeLeft === "00:00:00"}
           >
             {savingRound ? <span className="spinner"></span> : `Guardar ${rounds[activeRoundIndex]?.round_name}`}
           </button>

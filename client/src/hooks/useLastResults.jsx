@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { apiFetch } from "../utils/apiFetch";
 
 export function useLastResults() {
   const [lastResults, setLastResults] = useState([]);
@@ -8,9 +9,7 @@ export function useLastResults() {
   useEffect(() => {
     async function fetchLastResults() {
       try {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/dashboard/last-results`, {
-          credentials: "include",
-        });
+        const response = await apiFetch(`${process.env.REACT_APP_API_URL}/api/dashboard/last-results`);
 
           if (!response.ok) {
             throw new Error("Failed to fetch last results");

@@ -4,6 +4,7 @@ import { useUser } from "../context/UserContext";
 import DashboardLayout from "../components/layout/DashboardLayout";
 import LeaderboardCard from "../components/quinielaDetails/LeaderboardCard";
 import QuinielaSheetTable from "../components/quinielaDetails/QuinielaSheetTable";
+import { apiFetch } from "../utils/apiFetch";
 
 export default function QuinielaDetailsSheetPage() {
   const { quinielaId } = useParams();
@@ -11,9 +12,7 @@ export default function QuinielaDetailsSheetPage() {
   const [details, setDetails] = useState(null);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/quinielas/${quinielaId}/details`, {
-      credentials: "include"
-    })
+    apiFetch(`${process.env.REACT_APP_API_URL}/api/quinielas/${quinielaId}/details`)
       .then(res => res.json())
       .then(data => setDetails(data));
   }, [quinielaId]);

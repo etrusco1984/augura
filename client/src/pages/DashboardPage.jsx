@@ -20,7 +20,7 @@ export default function DashboardPage() {
   if (!user) return null;
   
   return (
-    <DashboardLayout title="Dashboard">
+    <DashboardLayout title={ `Dashboard➔${user.username}`}>
 
       {/* ROW 1 — GLOBAL CONTEXT */}
       <div className="dashboard-cards">

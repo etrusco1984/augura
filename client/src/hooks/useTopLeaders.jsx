@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { apiFetch } from "../utils/apiFetch";
 
 export function useTopLeaders() {
   const [leaders, setLeaders] = useState([]);
@@ -8,7 +9,7 @@ export function useTopLeaders() {
   useEffect(() => {
     async function fetchTopLeaders() {
       try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/leaderboard/top`);
+        const res = await apiFetch(`${process.env.REACT_APP_API_URL}/leaderboard/top`);
         const data = await res.json();
 
         if (!data.success) {

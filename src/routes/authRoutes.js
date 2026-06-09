@@ -4,14 +4,15 @@ import bcrypt from "bcrypt";
 import { getUserRoles, getUserByEmail, createUser } from "../db/usersSvc.js";
 
 const router = express.Router();
-const isProduction = process.env.NODE_ENV === "production";
 
+// -----------------------------
+// LOGIN
+// -----------------------------
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
     const user = await getUserByEmail(email);
-
     if (!user) {
       return res.status(400).json({ error: "Invalid email or password" });
     }
@@ -37,14 +38,8 @@ router.post("/login", async (req, res) => {
       { expiresIn: "45m" }
     );
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: isProduction,          // true in production, false in dev
-      sameSite: isProduction ? "none" : "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    });
-
     res.json({
+      token,
       user: {
         user_id: user.user_id,
         username: user.username,
@@ -61,13 +56,19 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// -----------------------------
+// LOGOUT (no-op for token auth)
+// -----------------------------
 router.post("/logout", (req, res) => {
-  res.clearCookie("token");
   res.json({ success: true });
 });
 
+// -----------------------------
+// ME (validate token)
+// -----------------------------
 router.get("/me", (req, res) => {
-  const token = req.cookies.token;
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.split(" ")[1];
 
   if (!token) {
     return res.status(401).json({ user: null });
@@ -77,11 +78,14 @@ router.get("/me", (req, res) => {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
 
     res.json({
-      user_id: payload.user_id,
-      username: payload.username,
-      email: payload.email,
-      language_code: payload.language_code,
-      is_admin: payload.is_admin
+      user: {
+        user_id: payload.user_id,
+        username: payload.username,
+        email: payload.email,
+        language_code: payload.language_code,
+        roles: payload.roles,
+        is_admin: payload.is_admin
+      }
     });
 
   } catch (err) {
@@ -89,6 +93,9 @@ router.get("/me", (req, res) => {
   }
 });
 
+// -----------------------------
+// REGISTER
+// -----------------------------
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password, lang } = req.body;
@@ -111,31 +118,32 @@ router.post("/register", async (req, res) => {
       language_code: lang || "en"
     });
 
+    const roles = await getUserRoles(newUser.user_id);
+    const is_admin = roles.includes("admin");
+
     const token = jwt.sign(
       {
         user_id: newUser.user_id,
         username: newUser.username,
         email: newUser.email,
         language_code: newUser.language_code,
-        is_admin: newUser.is_admin
+        roles,
+        is_admin
       },
       process.env.JWT_SECRET,
       { expiresIn: "45m" }
     );
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: isProduction,          // true in production, false in dev
-      sameSite: isProduction ? "none" : "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    });
-
     res.json({
-      user_id: newUser.user_id,
-      username: newUser.username,
-      email: newUser.email,
-      language_code: newUser.language_code,
-      is_admin: newUser.is_admin
+      token,
+      user: {
+        user_id: newUser.user_id,
+        username: newUser.username,
+        email: newUser.email,
+        language_code: newUser.language_code,
+        roles,
+        is_admin
+      }
     });
 
   } catch (err) {

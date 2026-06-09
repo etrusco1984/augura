@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { apiFetch } from "../utils/apiFetch";
 
 export function useAdminSeasons() {
   const [seasons, setSeasons] = useState([]);
@@ -8,9 +9,7 @@ export function useAdminSeasons() {
   useEffect(() => {
     async function fetchAdminSeasons() {
       try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/admin/seasons`,{
-          credentials: "include"
-        });
+        const res = await apiFetch(`${process.env.REACT_APP_API_URL}/api/admin/seasons`);
         if (!res.ok) throw new Error("Failed to fetch admin seasons");
         const data = await res.json();
         setSeasons(data);

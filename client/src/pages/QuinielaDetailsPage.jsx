@@ -7,15 +7,14 @@ import NextMatchesCard from "../components/quinielaDetails/NextMatchesCard";
 import LeaderboardCard from "../components/quinielaDetails/LeaderboardCard";
 import RecentResultsCard from "../components/quinielaDetails/RecentResultsCard";
 import DashboardLayout from "../components/layout/DashboardLayout"; 
+import { apiFetch } from "../utils/apiFetch";
 
 export default function QuinielaDetailsPage() {
   const { quinielaId } = useParams();
   const [details, setDetails] = useState(null);
   const { user } = useUser();
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/quinielas/${quinielaId}/details`, {
-      credentials: "include"
-    })
+    apiFetch(`${process.env.REACT_APP_API_URL}/api/quinielas/${quinielaId}/details`)
       .then(res => res.json())
       .then(data => setDetails(data));
   }, [quinielaId]);

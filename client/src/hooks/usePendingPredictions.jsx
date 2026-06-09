@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { apiFetch } from "../utils/apiFetch";
 
 export function usePendingPredictions(user_id) {
   const [pending, setPending] = useState([]);
@@ -10,9 +11,7 @@ export function usePendingPredictions(user_id) {
 
     async function fetchPending() {
       try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/predictions/pending`, {
-          credentials: "include"
-        });
+        const res = await apiFetch(`${process.env.REACT_APP_API_URL}/api/predictions/pending`);
         const data = await res.json();
 
         if (!data.success) {

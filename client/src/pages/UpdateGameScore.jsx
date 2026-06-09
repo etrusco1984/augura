@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import api from "../api";
+//import api from "../api";
 import { useParams } from "react-router-dom";
 import DashboardLayout from "../components/layout/DashboardLayout";
 import "./buttons.css";
+import { apiFetch } from "../utils/apiFetch";
 
 export default function UpdateGameScore() {
     const { season_id } = useParams();
@@ -16,9 +17,12 @@ export default function UpdateGameScore() {
     useEffect(() => {
         async function loadGames() {
 
-            try {                
-                const res = await api.get(`/api/admin/games/${season_id}`, { withCredentials: true });
-                setGames(res.data);
+            try {
+                const res = await apiFetch(
+                    `${process.env.REACT_APP_API_URL}/api/admin/games/${season_id}`
+                );
+                const data = await res.json();
+                setGames(data);
 
             } catch (err) {
                 console.error("Failed to load games:", err);
@@ -85,10 +89,13 @@ export default function UpdateGameScore() {
                 penalty_winner_team_id: game.penalty_winner_team_id
             };
 
-            await api.patch(
-                `/api/admin/games/${game.game_id}/score`,
-                payload,
-                { withCredentials: true }
+            await apiFetch(
+                `${process.env.REACT_APP_API_URL}/api/admin/games/${game.game_id}/score`,
+                {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                }
             );
         } catch (err) {
             console.error("Failed to save game:", err);
