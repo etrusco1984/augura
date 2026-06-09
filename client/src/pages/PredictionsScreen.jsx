@@ -92,34 +92,37 @@ export default function PredictionsScreen() {
   }, [games, predictions, loading]);
 
   useEffect(() => {
-  const activeRound = rounds[activeRoundIndex];
-  if (!activeRound) return;
+    const activeRound = rounds[activeRoundIndex];
+    if (!activeRound) return;
 
-  // Use target_date from the round itself
-  const lockDate = new Date(`${activeRound.games[0]?.route_target}Z`);
-
-  if (isNaN(lockDate.getTime())) {
-    setTimeLeft("Undefined");
-    return;
-  }
-
-  const timer = setInterval(() => {
-    const now = new Date();
-    const diff = lockDate - now;
-
-    if (diff <= 0) {
-      clearInterval(timer);
-      setTimeLeft("00:00:00");
-    } else {
-      const hours = Math.floor(diff / (1000 * 60 * 60));
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
-      setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+    // Use target_date from the round itself
+    const raw = activeRound.games[0]?.route_target;
+    const normalized = raw?.replace(" ", "T"); // ensure ISO format
+    const lockDate = new Date(
+      normalized?.endsWith("Z") ? normalized : normalized + "Z"
+    );
+    if (isNaN(lockDate.getTime())) {
+      setTimeLeft("Undefined");
+      return;
     }
-  }, 1000);
 
-  return () => clearInterval(timer);
-}, [rounds, activeRoundIndex]);
+    const timer = setInterval(() => {
+      const now = new Date();
+      const diff = lockDate - now;
+
+      if (diff <= 0) {
+        clearInterval(timer);
+        setTimeLeft("00:00:00");
+      } else {
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+        setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [rounds, activeRoundIndex]);
 
   if (loading) return <div>Loading...</div>;
 
