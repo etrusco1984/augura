@@ -351,8 +351,23 @@ body {
     padding: 0.3rem 0.6rem;
     font-size: 0.85rem;
   }
-}
 
+  .card {
+    flex: 1 1 100%;
+    padding: 0.75rem;
+    font-size: 0.9rem;
+    box-shadow: 0 1px 4px rgba(9, 53, 24, 0.25);
+  }
+
+  .dashboard-cards {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .dashboard-content-wrapper {
+    padding: 0.5rem 1rem;
+  }
+}
 
 /* DESKTOP: hide hamburger */
 @media (min-width: 769px) {
