@@ -195,119 +195,121 @@ export default function PredictionsScreen() {
   return (
     <DashboardLayout title={`Tiempo restante: ${timeLeft}`}>
       <div className="prediction-screen">
+        <div class="header">
+          {/* ⭐ LEFT/RIGHT ARROWS */}
+          <div className="flex justify-between items-center px-2 py-2">
+            <button
+              onClick={() => setActiveRoundIndex(i => Math.max(i - 1, 0))}
+              disabled={activeRoundIndex === 0}
+              className={`px-3 py-1 rounded ${activeRoundIndex === 0
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-green-700 text-white"
+                }`}
+            >
+              ◀
+            </button>
 
-        {/* ⭐ LEFT/RIGHT ARROWS */}
-        <div className="flex justify-between items-center px-2 py-2">
-          <button
-            onClick={() => setActiveRoundIndex(i => Math.max(i - 1, 0))}
-            disabled={activeRoundIndex === 0}
-            className={`px-3 py-1 rounded ${activeRoundIndex === 0
-              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-              : "bg-green-700 text-white"
-              }`}
-          >
-            ◀
-          </button>
+            <span className="font-semibold text-lg">   {rounds[activeRoundIndex]?.round_name}   </span>
 
-          <span className="font-semibold text-lg">   {rounds[activeRoundIndex]?.round_name}   </span>
-
-          <button
-            onClick={() =>
-              setActiveRoundIndex(i =>
-                Math.min(i + 1, rounds.length - 1)
-              )
-            }
-            disabled={activeRoundIndex === rounds.length - 1}
-            className={`px-3 py-1 rounded ${activeRoundIndex === rounds.length - 1
-              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-              : "bg-green-700 text-white"
-              }`}
-          >
-            ▶
-          </button>
-          <button
-            onClick={saveRound}
-            className={`save-btn ${savingRound ? "saving" : ""}`}
-            disabled={savingRound || timeLeft === "00:00:00"}
-          >
-            {savingRound ? <span className="spinner"></span> : `Guardar ${rounds[activeRoundIndex]?.round_name}`}
-          </button>
-        </div>
-
-        {rowsForRound.map(row => (
-
-          <div key={row.game_id} className="prediction-row">
-            <div className="teams">
-              <img src={`/flag-icons/${row.home_logo}`} className="team-logo" />
-              <span className="team-name"> {row.home_team} </span>
-
-              <input
-                type="number"
-                value={row.predicted_home_score}
-                disabled={row.isLocked}
-                onChange={e => updateRow(row.game_id, "predicted_home_score", e.target.value)}
-                className="score-input"
-              />
-
-              <span className="vs"> <strong>vs</strong> </span>
-
-              <input
-                type="number"
-                value={row.predicted_away_score}
-                disabled={row.isLocked}
-                onChange={e => updateRow(row.game_id, "predicted_away_score", e.target.value)}
-                className="score-input"
-              />
-
-              <span className="team-name"> {row.away_team} </span>
-              <img src={`/flag-icons/${row.away_logo}`} className="team-logo" />
-            </div>
-
-            {/* PK radio buttons */}
-            {row.stage_name === "knockout" &&
-              row.predicted_home_score === row.predicted_away_score &&
-              !row.isLocked && (
-                <div className="pk-radio-group">
-                  <label>
-                    <input
-                      type="radio"
-                      name={`pk-${row.game_id}`}
-                      value={row.home_team}
-                      checked={row.predicted_penalty_winner_team_id === row.home_team_id}
-                      onChange={() =>
-                        updateRow(row.game_id, "predicted_penalty_winner_team_id", Number(row.home_team_id))
-                      }
-                    />
-                    {row.home_team}
-                  </label>
-
-                  <label>
-                    <input
-                      type="radio"
-                      name={`pk-${row.game_id}`}
-                      value={row.away_team}
-                      checked={row.predicted_penalty_winner_team_id === row.away_team_id}
-                      onChange={() =>
-                        updateRow(row.game_id, "predicted_penalty_winner_team_id", Number(row.away_team_id))
-                      }
-                    />
-                    {row.away_team}
-                  </label>
-                </div>
-              )}
-
-            {/* Locked PK display */}
-            {row.stage_name === "knockout" &&
-              row.isLocked &&
-              row.predicted_home_score === row.predicted_away_score && (
-                <div className="pk-locked">
-                  PK Winner: {row.predicted_penalty_winner_team_id}
-                </div>
-              )}
-
+            <button
+              onClick={() =>
+                setActiveRoundIndex(i =>
+                  Math.min(i + 1, rounds.length - 1)
+                )
+              }
+              disabled={activeRoundIndex === rounds.length - 1}
+              className={`px-3 py-1 rounded ${activeRoundIndex === rounds.length - 1
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-green-700 text-white"
+                }`}
+            >
+              ▶
+            </button>
+            <button
+              onClick={saveRound}
+              className={`save-btn ${savingRound ? "saving" : ""}`}
+              disabled={savingRound || timeLeft === "00:00:00"}
+            >
+              {savingRound ? <span className="spinner"></span> : `Guardar ${rounds[activeRoundIndex]?.round_name}`}
+            </button>
           </div>
-        ))}
+          <div style={{ height: '12px', width: '100%' }} />
+        </div>
+        <div class="scroll-area">
+          {rowsForRound.map(row => (
 
+            <div key={row.game_id} className="prediction-row">
+              <div className="teams">
+                <img src={`/flag-icons/${row.home_logo}`} className="team-logo" />
+                <span className="team-name"> {row.home_team} </span>
+
+                <input
+                  type="number"
+                  value={row.predicted_home_score}
+                  disabled={row.isLocked}
+                  onChange={e => updateRow(row.game_id, "predicted_home_score", e.target.value)}
+                  className="score-input"
+                />
+
+                <span className="vs"> <strong>vs</strong> </span>
+
+                <input
+                  type="number"
+                  value={row.predicted_away_score}
+                  disabled={row.isLocked}
+                  onChange={e => updateRow(row.game_id, "predicted_away_score", e.target.value)}
+                  className="score-input"
+                />
+
+                <span className="team-name"> {row.away_team} </span>
+                <img src={`/flag-icons/${row.away_logo}`} className="team-logo" />
+              </div>
+
+              {/* PK radio buttons */}
+              {row.stage_name === "knockout" &&
+                row.predicted_home_score === row.predicted_away_score &&
+                !row.isLocked && (
+                  <div className="pk-radio-group">
+                    <label>
+                      <input
+                        type="radio"
+                        name={`pk-${row.game_id}`}
+                        value={row.home_team}
+                        checked={row.predicted_penalty_winner_team_id === row.home_team_id}
+                        onChange={() =>
+                          updateRow(row.game_id, "predicted_penalty_winner_team_id", Number(row.home_team_id))
+                        }
+                      />
+                      {row.home_team}
+                    </label>
+
+                    <label>
+                      <input
+                        type="radio"
+                        name={`pk-${row.game_id}`}
+                        value={row.away_team}
+                        checked={row.predicted_penalty_winner_team_id === row.away_team_id}
+                        onChange={() =>
+                          updateRow(row.game_id, "predicted_penalty_winner_team_id", Number(row.away_team_id))
+                        }
+                      />
+                      {row.away_team}
+                    </label>
+                  </div>
+                )}
+
+              {/* Locked PK display */}
+              {row.stage_name === "knockout" &&
+                row.isLocked &&
+                row.predicted_home_score === row.predicted_away_score && (
+                  <div className="pk-locked">
+                    PK Winner: {row.predicted_penalty_winner_team_id}
+                  </div>
+                )}
+
+            </div>
+          ))}
+        </div>
       </div>
     </DashboardLayout>
   );

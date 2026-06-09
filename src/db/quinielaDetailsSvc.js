@@ -131,12 +131,16 @@ export async function getUserPredictions(client,quinielaId, userId) {
   return rows;
 }
 
-// Get top 10 users in the quiniela leaderboard, along with their total points and breakdown of hits
+// Get users in the quiniela leaderboard, along with their total points and breakdown of hits
 export async function getLeaderboard(client, quinielaId) {
   const sql = `
     SELECT
       u.user_id,
-      u.username,
+      case
+	      when strpos(u.username, ' ')=0 then u.username
+	      else
+	      substring(u.username,1,strpos(u.username, ' ')-1) ||' ' || substring(u.username,strpos(u.username, ' ')+1,1)
+	    end as username,
       COALESCE(SUM(pt.points), 0) AS total_points,
       COUNT(pt.game_id) AS games_played,
       COUNT(*) FILTER (WHERE pt.is_exact_score) AS exact_hits,
