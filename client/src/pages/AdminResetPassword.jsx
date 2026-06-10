@@ -54,7 +54,7 @@ export default function AdminResetPassword() {
     }
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/users/${selectedUserId}/password`, {
+      const res = await apiFetch(`${process.env.REACT_APP_API_URL}/users/${selectedUserId}/password`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
