@@ -13,11 +13,13 @@ export async function createPrediction(user_id, game_id, predicted_home_score, p
 
 // Update an existing prediction
 export async function updatePrediction(predicted_home_score, predicted_away_score, predicted_penalty_winner_team_id, prediction_id) {
+  
   const result = await pool.query(
     `UPDATE predictions
      SET predicted_home_score = $1,
          predicted_away_score = $2,
-         predicted_penalty_winner_team_id = $3
+         predicted_penalty_winner_team_id = $3,
+         updated_at=NOW()
      WHERE prediction_id = $4
      RETURNING *`,
     [predicted_home_score, predicted_away_score, predicted_penalty_winner_team_id, prediction_id]

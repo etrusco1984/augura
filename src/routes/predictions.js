@@ -9,8 +9,10 @@ import {
   getPendingPredictions,
   bulkSavePredictions
 } from "../db/predictionsSvc.js";
+import { getRoundByGameId } from "../db/roundsSvc.js";
 
 import { getPredictions } from "../controllers/predictionsController.js";
+
 import { t } from "../i18n.js";
 
 const router = express.Router();
@@ -132,12 +134,34 @@ router.get("/:quiniela_id", getPredictions);
  */
 router.patch("/", async (req, res) => {
   try {
-    const updated = await updatePrediction(req.body);
+    const {
+      prediction_id,
+      predicted_home_score,
+      predicted_away_score,
+      predicted_penalty_winner_team_id,
+      round_target
+    } = req.body;
+
+    // ⛔ Lock check BEFORE updating
+    console.log("***PATCH*** Round target=", round_target, " NOW=", new Date(), " is greater?", (new Date(round_target) <= new Date()));
+    if (new Date(round_target) <= new Date()) {
+      return res.status(403).json({ error: "Predictions are locked for this round" });
+    }
+
+    const updated = await updatePrediction(
+      predicted_home_score,
+      predicted_away_score,
+      predicted_penalty_winner_team_id,
+      prediction_id
+    );
+
     res.json(updated);
   } catch (err) {
+    console.error("Failed to update prediction:", err);
     res.status(500).json({ error: "Failed to update prediction" });
   }
 });
+
 
 /**
  * POST /api/predictions/bulk
@@ -145,14 +169,45 @@ router.patch("/", async (req, res) => {
  */
 router.post("/bulk", async (req, res) => {
   try {
-    const predictions = req.body;
-    const results = await bulkSavePredictions(predictions);
+    const { predictions } = req.body;
 
+    if (!predictions || predictions.length === 0) {
+      return res.status(400).json({ error: "No predictions provided" });
+    }
+    // 1. Extract game_id from the first prediction
+    const gameId = predictions[0].game_id;
+    // 2. Fetch REAL round info from DB (ignore client data)
+    const round = await getRoundByGameId(gameId);
+
+    if (!round) {
+      return res.status(400).json({ error: "Round not found" });
+    }
+    // 3. ⛔ Lock check
+
+    const now = new Date();
+    const lockDate = new Date(round.route_target);
+    console.log("=== ROUND TARGET DEBUG ===");
+    console.log("req.body.round_target:", req.body.route_target);
+    console.log("typeof req.body.round_target:", typeof req.body.round_target);
+    console.log("Parsed date:", new Date(req.body.route_target));
+    console.log("Parsed date (timestamp):", new Date(req.body.round_target).getTime());
+    console.log("Now:", new Date());
+    console.log("Now (timestamp):", Date.now());
+    console.log("Comparison result:", new Date(req.body.route_target) <= new Date());
+    console.log("==========================");
+    if (now >= lockDate) {
+      return res.status(403).json({ error: "Predictions are locked for this round" });
+    }
+
+    // 4. Perform the bulk update
+    const results = await bulkSavePredictions(predictions);
     res.json(results);
+
   } catch (err) {
     console.error("Bulk save failed:", err);
     res.status(500).json({ error: "Bulk save failed" });
   }
 });
+
 
 export default router;
