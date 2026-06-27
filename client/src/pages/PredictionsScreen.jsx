@@ -150,16 +150,18 @@ export default function PredictionsScreen() {
       const roundRows = rounds[activeRoundIndex].games;
 
       // 2. Build bulk payload
-      const payload = roundRows.map(r => ({
-        prediction_id: r.prediction_id || null,
-        user_id: user?.user_id, // You need to get the user_id from context or props
-        game_id: r.game_id,
-        predicted_home_score: Number(r.predicted_home_score),
-        predicted_away_score: Number(r.predicted_away_score),
-        predicted_penalty_winner_team_id: r.predicted_penalty_winner_team_id,
-        quiniela_id: quiniela_id
-      }));
-
+      const payload = {
+        predictions: roundRows.map(r => ({
+          prediction_id: r.prediction_id || null,
+          user_id: user?.user_id,
+          game_id: r.game_id,
+          predicted_home_score: Number(r.predicted_home_score),
+          predicted_away_score: Number(r.predicted_away_score),
+          predicted_penalty_winner_team_id: r.predicted_penalty_winner_team_id,
+          quiniela_id: quiniela_id
+        })),
+        round_target: roundRows[0].route_target // rename later to round_target_date
+      };
       // 3. Send one bulk request
       const res = await apiFetch(
         `${process.env.REACT_APP_API_URL}/api/predictions/bulk`,
@@ -170,9 +172,16 @@ export default function PredictionsScreen() {
         }
       );
 
+      if (!res.ok) {
+        const err = await res.json();
+        console.error("Save failed:", err);
+        alert("This round is locked. You cannot modify predictions.");
+        return; // ⛔ STOP HERE — DO NOT UPDATE STATE
+      }
+
       // 4. Backend returns updated prediction_ids
       const updated = await res.json();
-
+      
       // 5. Update rows state with new prediction_ids
       setRounds(prev => {
         const updatedRounds = [...prev];
@@ -190,6 +199,7 @@ export default function PredictionsScreen() {
       setSavingRound(false);
     }
   }
+  window.saveRound = saveRound;
   const activeRoundId = rounds[activeRoundIndex]?.round_id;
   const rowsForRound = rounds[activeRoundIndex]?.games || [];
   return (
