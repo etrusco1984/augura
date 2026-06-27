@@ -134,7 +134,7 @@ router.get("/:quiniela_id", getPredictions);
  */
 router.patch("/", async (req, res) => {
   try {
-    const {
+    const { 
       prediction_id,
       predicted_home_score,
       predicted_away_score,
@@ -143,7 +143,7 @@ router.patch("/", async (req, res) => {
     } = req.body;
 
     // ⛔ Lock check BEFORE updating
-    console.log("***PATCH*** Round target=", round_target, " NOW=", new Date(), " is greater?", (new Date(round_target) <= new Date()));
+    
     if (new Date(round_target) <= new Date()) {
       return res.status(403).json({ error: "Predictions are locked for this round" });
     }
@@ -169,13 +169,13 @@ router.patch("/", async (req, res) => {
  */
 router.post("/bulk", async (req, res) => {
   try {
-    const { predictions } = req.body;
+    const { predictions} = req.body;
 
-    if (!predictions || predictions.length === 0) {
+    if (!predictions || predictions.length === 0){
       return res.status(400).json({ error: "No predictions provided" });
     }
     // 1. Extract game_id from the first prediction
-    const gameId = predictions[0].game_id;
+    const gameId = predictions[0].game_id;  
     // 2. Fetch REAL round info from DB (ignore client data)
     const round = await getRoundByGameId(gameId);
 
@@ -183,18 +183,10 @@ router.post("/bulk", async (req, res) => {
       return res.status(400).json({ error: "Round not found" });
     }
     // 3. ⛔ Lock check
-
+    
     const now = new Date();
     const lockDate = new Date(round.route_target);
-    console.log("=== ROUND TARGET DEBUG ===");
-    console.log("req.body.round_target:", req.body.route_target);
-    console.log("typeof req.body.round_target:", typeof req.body.round_target);
-    console.log("Parsed date:", new Date(req.body.route_target));
-    console.log("Parsed date (timestamp):", new Date(req.body.round_target).getTime());
-    console.log("Now:", new Date());
-    console.log("Now (timestamp):", Date.now());
-    console.log("Comparison result:", new Date(req.body.route_target) <= new Date());
-    console.log("==========================");
+    
     if (now >= lockDate) {
       return res.status(403).json({ error: "Predictions are locked for this round" });
     }

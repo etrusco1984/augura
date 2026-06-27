@@ -199,7 +199,7 @@ export default function PredictionsScreen() {
       setSavingRound(false);
     }
   }
-  window.saveRound = saveRound;
+  
   const activeRoundId = rounds[activeRoundIndex]?.round_id;
   const rowsForRound = rounds[activeRoundIndex]?.games || [];
   return (
